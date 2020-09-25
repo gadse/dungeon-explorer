@@ -91,45 +91,35 @@ namespace dungeon_explorer {
         }
 
         private static long ReadHealthFromConsole() {
-            Console.WriteLine("Health points?");
-            long health = -1;
-            while (health < 0) {
-                try {
-                    health = Convert.ToInt64(Console.ReadLine());
-                } catch (System.FormatException) {
-                    Console.WriteLine("Come again?");
-                    health = -1;
-                }
-            } 
-            return health;
+            return ReadNonNegativeLongFromConsole(
+                "Health points?"
+            );
         }
 
         private static long ReadDamageFromConsole() {
-            Console.WriteLine("Average damage per round?");
-            long average_damage = -1;
-            while (average_damage < 0) {
-                try {
-                    average_damage = Convert.ToInt64(Console.ReadLine());
-                } catch (System.FormatException) {
-                    Console.WriteLine("Come again?");
-                    average_damage = -1;
-                }
-            }
-            return average_damage;
+            return ReadNonNegativeLongFromConsole(
+                "Average damage per round?"
+            );
         }
 
         private static long ReadResourcesFromConsole() {
-            Console.WriteLine("Resources available? (Spell slots etc.)");
-            long ressources = -1;
-            while (ressources < 0) {
+            return ReadNonNegativeLongFromConsole(
+                "Resources available? (Spell slots etc.)"
+            );
+        }
+
+        private static long ReadNonNegativeLongFromConsole(string prompt) {
+            Console.WriteLine(prompt);
+            long input = -1;
+            while (input < 0) {
                 try {
-                    ressources = Convert.ToInt64(Console.ReadLine());
+                    input = Convert.ToInt64(Console.ReadLine());
                 } catch (System.FormatException) {
                     Console.WriteLine("Come again?");
-                    ressources = -1;
+                    input = -1;
                 }
             }
-            return ressources;
+            return input;
         }
     }
 

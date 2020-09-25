@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace dungeon_explorer {
+namespace DungeonExplorer {
     class Shell {
         static void Main(string[] args) {
 
@@ -23,8 +23,8 @@ namespace dungeon_explorer {
             }
 
             Console.WriteLine("Processing...");
-            List<Event> eventLog = Engine.Simulate(characters, enemies, true);
-            Console.WriteLine(eventLog.ToString());
+            SimulationResult result = Engine.Simulate(characters, enemies, true);
+            Console.WriteLine(result.ToString());
 
             Console.WriteLine("kthxbye ^w^");
         }
@@ -123,57 +123,4 @@ namespace dungeon_explorer {
         }
     }
 
-    class Character {
-        public string Name { get; private set; }
-        public long HealthPoints { get; private set; }
-        public long AverageDamagePerRound { get; private set; }
-        public long ResourceLimit { get; private set; }
-        
-        /*
-        This model is extremely simplified. In the end, the Game Master needs to utilize their experience to find
-        reasonable values.
-        */
-        public Character(
-            string name,
-            long healthPoints,
-            long averageDamagePerRound, 
-            long resourceLimit
-        ) {
-            
-            Name = name;
-            HealthPoints = healthPoints;
-            AverageDamagePerRound = averageDamagePerRound;
-            ResourceLimit = resourceLimit;
-        }
-
-        override public String ToString() {
-            return String.Format(
-                "{0} | {1} HP | {2} DMG/RD | {3} RES",
-                Name,
-                HealthPoints,
-                AverageDamagePerRound,
-                ResourceLimit
-            );
-        }
-    }
-
-
-    class Event {
-        public Character Source {get; private set;}
-        public Character Target {get; private set;}
-        public string Description {get; private set;}
-
-        public Event(Character source, Character target, string description) {
-            Source = source;
-            Target = target;
-            Description = description;
-        }
-    }
-
-
-    class Engine {
-        public static List<Event> Simulate(List<Character> party, List<Character> enemies, Boolean partyBegins) {
-            throw new System.NotImplementedException();
-        }
-    }
-}
+} // namespace DungeonExplorer

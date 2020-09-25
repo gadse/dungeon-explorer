@@ -4,11 +4,13 @@ using System.Collections.Generic;
 namespace dungeon_explorer {
     class Shell {
         static void Main(string[] args) {
-            List<Character> characters = new List<Character>();
-            Boolean done_with_characters = false;
 
             Console.WriteLine("Hi there! Welcome to the dungeon explorer.");
+
+            // TODO: Turn into method.
             Console.WriteLine("Let's get to know our party!");
+            List<Character> characters = new List<Character>();
+            Boolean done_with_characters = false;
             while (!done_with_characters) {
                 Console.WriteLine(
                     String.Format(
@@ -33,11 +35,11 @@ namespace dungeon_explorer {
                     done_with_characters = true;
                 }
             }
-            
+
+            // TODO: Turn into method.
+            Console.WriteLine("Now let's talk about the enemies our party faces.");
             List<Character> enemies = new List<Character>();
             Boolean done_with_enemies = false;
-
-            Console.WriteLine("Now let's talk about the enemies our party faces.");
             while (!done_with_enemies) {
                 Console.WriteLine(
                     String.Format(
@@ -62,6 +64,8 @@ namespace dungeon_explorer {
                     done_with_enemies = true;
                 }
             }
+
+            // TODO: Turn into method.
             Console.WriteLine("====== THE PARTY ======");
             foreach (Character character in characters) {
                 Console.WriteLine(character.ToString());
@@ -119,8 +123,6 @@ namespace dungeon_explorer {
             }
             return ressources;
         }
-
-        
     }
 
     class Character {
@@ -129,16 +131,17 @@ namespace dungeon_explorer {
         public long AverageDamagePerRound { get; private set; }
         public long ResourceLimit { get; private set; }
         
+        /*
+        This model is extremely simplified. In the end, the Game Master needs to utilize their experience to find
+        reasonable values.
+        */
         public Character(
             string name,
             long healthPoints,
             long averageDamagePerRound, 
             long resourceLimit
         ) {
-            /*
-            This model is extremely simplified. In the end, the Game Master needs to utilize their experience to find
-            reasonable values.
-            */
+            
             Name = name;
             HealthPoints = healthPoints;
             AverageDamagePerRound = averageDamagePerRound;
@@ -171,7 +174,7 @@ namespace dungeon_explorer {
 
 
     class Engine {
-        public static void Simulate(List<Character> party, List<Character> enemies, Boolean partyBegins) {
+        public static List<Event> Simulate(List<Character> party, List<Character> enemies, Boolean partyBegins) {
             throw new System.NotImplementedException();
         }
     }

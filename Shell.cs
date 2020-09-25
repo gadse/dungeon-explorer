@@ -7,8 +7,29 @@ namespace dungeon_explorer {
 
             Console.WriteLine("Hi there! Welcome to the dungeon explorer.");
 
-            // TODO: Turn into method.
             Console.WriteLine("Let's get to know our party!");
+            List<Character> characters = QueryPartyMembers();
+
+            Console.WriteLine("Now let's talk about the enemies our party faces.");
+            List<Character> enemies = QueryEnemies();
+            
+            Console.WriteLine("====== THE PARTY ======");
+            foreach (Character character in characters) {
+                Console.WriteLine(character.ToString());
+            }
+            Console.WriteLine("====== THE ENEMIES ======");
+            foreach (Character enemy in enemies) {
+                Console.WriteLine(enemy.ToString());
+            }
+
+            Console.WriteLine("Processing...");
+            List<Event> eventLog = Engine.Simulate(characters, enemies, true);
+            Console.WriteLine(eventLog.ToString());
+
+            Console.WriteLine("kthxbye ^w^");
+        }
+
+        private static List<Character> QueryPartyMembers() {
             List<Character> characters = new List<Character>();
             Boolean done_with_characters = false;
             while (!done_with_characters) {
@@ -36,8 +57,10 @@ namespace dungeon_explorer {
                 }
             }
 
-            // TODO: Turn into method.
-            Console.WriteLine("Now let's talk about the enemies our party faces.");
+            return characters;
+        }
+
+        private static List<Character> QueryEnemies() {
             List<Character> enemies = new List<Character>();
             Boolean done_with_enemies = false;
             while (!done_with_enemies) {
@@ -64,22 +87,7 @@ namespace dungeon_explorer {
                     done_with_enemies = true;
                 }
             }
-
-            // TODO: Turn into method.
-            Console.WriteLine("====== THE PARTY ======");
-            foreach (Character character in characters) {
-                Console.WriteLine(character.ToString());
-            }
-            Console.WriteLine("====== THE ENEMIES ======");
-            foreach (Character enemy in enemies) {
-                Console.WriteLine(enemy.ToString());
-            }
-
-            Console.WriteLine("Processing...");
-            List<Event> eventLog = Engine.Simulate(characters, enemies, true);
-            Console.WriteLine(eventLog.ToString());
-
-            Console.WriteLine("kthxbye ^w^");
+            return enemies;
         }
 
         private static long ReadHealthFromConsole() {

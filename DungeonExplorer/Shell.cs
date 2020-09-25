@@ -43,13 +43,13 @@ namespace DungeonExplorer {
                 if (name.Trim() != "") {
                     long healthPoints = ReadHealthFromConsole();
                     long averageDamage = ReadDamageFromConsole();
-                    long resourceLimit = ReadResourcesFromConsole();
+                    long resources = ReadResourcesFromConsole();
                     characters.Add(
                         new Character(
                             name: name,
                             healthPoints: healthPoints,
                             averageDamagePerRound: averageDamage,
-                            resourceLimit: resourceLimit
+                            resources: resources
                         )
                     );
                 } else {
@@ -74,13 +74,13 @@ namespace DungeonExplorer {
                 if (name.Trim() != "") {
                     long healthPoints = ReadHealthFromConsole();
                     long averageDamage = ReadDamageFromConsole();
-                    long resourceLimit = ReadResourcesFromConsole();
+                    long resources = ReadResourcesFromConsole();
                     enemies.Add(
                         new Character(
                             name: name,
                             healthPoints: healthPoints,
                             averageDamagePerRound: averageDamage,
-                            resourceLimit: resourceLimit
+                            resources: resources
                         )
                     );
                 } else {
@@ -92,24 +92,39 @@ namespace DungeonExplorer {
 
         private static long ReadHealthFromConsole() {
             return ReadNonNegativeLongFromConsole(
-                "Health points?"
+                "Health points? [number expected]"
             );
         }
 
         private static long ReadDamageFromConsole() {
             return ReadNonNegativeLongFromConsole(
-                "Average damage per round?"
+                "Average damage per round? [number expected]"
             );
         }
 
         private static long ReadResourcesFromConsole() {
-            return ReadNonNegativeLongFromConsole(
-                "Resources available? (Spell slots etc.)"
+            Console.Write(
+                "Resources available? (Spell slots etc.) ['no' or number expected] > "
             );
+            long inputNumber = -1;
+            while (inputNumber != Constants.NO_RESOURCES_NEEDED && inputNumber < 0) {
+                try {
+                    string input = Console.ReadLine();
+                    if (input == "no") {
+                        inputNumber = Constants.NO_RESOURCES_NEEDED;
+                    } else {
+                        inputNumber = Convert.ToInt64(input);
+                    }
+                } catch (System.FormatException) {
+                    Console.WriteLine("Come again?");
+                    inputNumber = -1;
+                }
+            }
+            return inputNumber;
         }
 
         private static long ReadNonNegativeLongFromConsole(string prompt) {
-            Console.WriteLine(prompt);
+            Console.Write(prompt + " > ");
             long input = -1;
             while (input < 0) {
                 try {

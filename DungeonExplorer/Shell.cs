@@ -24,8 +24,10 @@ namespace DungeonExplorer {
 
             Console.WriteLine("Processing...");
             SimulationResult result = Engine.Simulate(characters, enemies, true);
-            Console.WriteLine(result.ToString());
 
+            Console.WriteLine("");
+            Console.WriteLine("Simulation Complete!\n====== RESULTS =======");
+            Console.WriteLine(result.ToString());
             Console.WriteLine("kthxbye ^w^");
         }
 

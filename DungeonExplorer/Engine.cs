@@ -18,14 +18,14 @@ namespace DungeonExplorer {
         override public string ToString() {
             string sourceTitle;
             if (Source != null) {
-                sourceTitle = Source.Name;
+                sourceTitle = Source.Name + "(" + Source.HealthPoints + ")";
             } else {
                 sourceTitle = "";
             }
 
             string targetTitle;
             if (Target != null) {
-                targetTitle = Target.Name;
+                targetTitle = Target.Name + "(" + Target.HealthPoints + ")";
             } else {
                 targetTitle = "";
             }
@@ -62,21 +62,25 @@ namespace DungeonExplorer {
 
         override public string ToString() {
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            sb.AppendLine("Party's end condition:");
-            foreach (Character member in Party) {
-                sb.AppendLine(member.ToString());
-            }
-            sb.AppendLine("Enemies' end condition:");
-            foreach (Character enemy in Enemies) {
-                sb.AppendLine(enemy.ToString());
-            }
-            sb.AppendLine(String.Format("Rounds fought: {0}", Rounds));
             if (PartyVictorious) {
                 sb.AppendLine("The party was victorious! :D ");
             } else {
                 sb.AppendLine("The party was defeated. :( ");
             }
-            sb.AppendLine("Event Log:");
+            sb.AppendLine("");
+            sb.AppendLine("Party's end condition:");
+            foreach (Character member in Party) {
+                sb.AppendLine(member.ToString());
+            }
+            sb.AppendLine("");
+            sb.AppendLine("Enemies' end condition:");
+            foreach (Character enemy in Enemies) {
+                sb.AppendLine(enemy.ToString());
+            }
+            sb.AppendLine("");
+            sb.AppendLine(String.Format("Rounds fought: {0}", Rounds));
+            sb.AppendLine("");
+            sb.AppendLine("====== DETAILED EVENT LOG ======");
             foreach (Event e in EventLog) {
                 sb.AppendLine(e.ToString());
             }
@@ -138,10 +142,10 @@ namespace DungeonExplorer {
 
                 if (resourcesAreRelevant) {
                     if (member.Resources > 0) {
-                        eventLog.Add(new Event(
-                            new Character(member), null, "spends resource"
-                        ));
                         member.Resources -= 1;
+                        eventLog.Add(new Event(
+                            new Character(member), null, "spent resource"
+                        ));
                         damage = damage; // B e explicit about not changing it!
                     } else {
                         eventLog.Add(new Event(
@@ -156,7 +160,7 @@ namespace DungeonExplorer {
                 eventLog.Add(new Event(
                     new Character(member),
                     new Character(mostDangerousOpponent),
-                    String.Format("attack for {0} DMG", damage)
+                    String.Format("attacked for {0} DMG", damage)
                 ));
                 if (mostDangerousOpponent.HealthPoints <= 0) {
                     otherFaction.Remove(mostDangerousOpponent);

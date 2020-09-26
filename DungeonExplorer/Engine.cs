@@ -16,10 +16,24 @@ namespace DungeonExplorer {
         }
 
         override public string ToString() {
+            string sourceTitle;
+            if (Source != null) {
+                sourceTitle = Source.Name;
+            } else {
+                sourceTitle = "";
+            }
+
+            string targetTitle;
+            if (Target != null) {
+                targetTitle = Target.Name;
+            } else {
+                targetTitle = "";
+            }
+
             return String.Format(
                 "{0} | {1} | {2}",
-                Source.Name,
-                Target.Name,
+                sourceTitle,
+                targetTitle,
                 Description
             );
         }

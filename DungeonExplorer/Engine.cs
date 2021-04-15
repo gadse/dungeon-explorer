@@ -2,44 +2,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
-namespace DungeonExplorer {
-
-    class Event {
-        public Character Source {get; private set;}
-        public Character Target {get; private set;}
-        public string Description {get; private set;}
-
-        public Event(Character source, Character target, string description) {
-            Source = source;
-            Target = target;
-            Description = description;
-        }
-
-        override public string ToString() {
-            string sourceTitle;
-            if (Source != null) {
-                sourceTitle = Source.Name + "(" + Source.HealthPoints + ")";
-            } else {
-                sourceTitle = "";
-            }
-
-            string targetTitle;
-            if (Target != null) {
-                targetTitle = Target.Name + "(" + Target.HealthPoints + ")";
-            } else {
-                targetTitle = "";
-            }
-
-            return String.Format(
-                "{0} | {1} | {2}",
-                sourceTitle,
-                targetTitle,
-                Description
-            );
-        }
-    }
-    
-    struct SimulationResult {
+namespace DungeonExplorer
+{
+    struct SimulationResult
+    {
         public readonly List<Character> Party;
         public readonly List<Character> Enemies;
         public readonly long Rounds;
@@ -52,55 +18,66 @@ namespace DungeonExplorer {
             long rounds,
             Boolean partyVictorious,
             List<Event> eventLog
-        ) {
+        )
+        {
             Party = party;
             Enemies = enemies;
             Rounds = rounds;
             PartyVictorious = partyVictorious;
-            EventLog = eventLog;    
+            EventLog = eventLog;
         }
 
-        override public string ToString() {
+        override public string ToString()
+        {
             System.Text.StringBuilder sb = new System.Text.StringBuilder();
-            if (PartyVictorious) {
+            if (PartyVictorious)
+            {
                 sb.AppendLine("The party was victorious! :D ");
-            } else {
+            }
+            else
+            {
                 sb.AppendLine("The party was defeated. :( ");
             }
             sb.AppendLine("");
             sb.AppendLine("Party's end condition:");
-            foreach (Character member in Party) {
+            foreach (Character member in Party)
+            {
                 sb.AppendLine(member.ToString());
             }
             sb.AppendLine("");
             sb.AppendLine("Enemies' end condition:");
-            foreach (Character enemy in Enemies) {
+            foreach (Character enemy in Enemies)
+            {
                 sb.AppendLine(enemy.ToString());
             }
             sb.AppendLine("");
             sb.AppendLine(String.Format("Rounds fought: {0}", Rounds));
             sb.AppendLine("");
             sb.AppendLine("====== DETAILED EVENT LOG ======");
-            foreach (Event e in EventLog) {
+            foreach (Event e in EventLog)
+            {
                 sb.AppendLine(e.ToString());
             }
             return sb.ToString();
         }
     }
 
-   class Engine {
+    class Engine
+    {
         public static SimulationResult Simulate(
             in List<Character> party,
             in List<Character> enemies,
             Boolean partyBegins
-        ) {
+        )
+        {
             Boolean partyTurn = partyBegins;
             List<Character> partyWorkingCopy = party.ConvertAll(c => new Character(c));
             List<Character> enemiesWorkingCopy = enemies.ConvertAll(c => new Character(c));
             List<Event> eventLog = new List<Event>();
             long rounds = 0;
 
-            while(FactionIsAlive(partyWorkingCopy) && FactionIsAlive(enemiesWorkingCopy)) {
+            while (FactionIsAlive(partyWorkingCopy) && FactionIsAlive(enemiesWorkingCopy))
+            {
                 Console.WriteLine("computing round...");
                 eventLog.AddRange(
                     // No need to pass a ref here
@@ -124,36 +101,48 @@ namespace DungeonExplorer {
             List<Character> party,
             List<Character> enemies,
             in Boolean partyTurn
-        ) {
-            if (partyTurn) {
+        )
+        {
+            if (partyTurn)
+            {
                 return ComputeRound(party, enemies);
-            } else {
+            }
+            else
+            {
                 return ComputeRound(enemies, party);
             }
         }
 
-        private static List<Event> ComputeRound(List<Character> activeFaction, List<Character> otherFaction) {
+        private static List<Event> ComputeRound(List<Character> activeFaction, List<Character> otherFaction)
+        {
             List<Event> eventLog = new List<Event>();
 
             Character mostDangerousOpponent = otherFaction.OrderByDescending(opp => opp.HealthPoints).First();
-            foreach (Character member in activeFaction) {
+            foreach (Character member in activeFaction)
+            {
                 Boolean resourcesAreRelevant = (member.Resources != Constants.NO_RESOURCES_NEEDED);
                 long damage = member.AverageDamagePerRound;
 
-                if (resourcesAreRelevant) {
-                    if (member.Resources > 0) {
+                if (resourcesAreRelevant)
+                {
+                    if (member.Resources > 0)
+                    {
                         member.Resources -= 1;
                         eventLog.Add(new Event(
                             new Character(member), null, "spent resource"
                         ));
                         damage = damage; // Be explicit about not changing it!
-                    } else {
+                    }
+                    else
+                    {
                         eventLog.Add(new Event(
                             new Character(member), null, String.Format("is out of resources")
                         ));
                         damage = damage / 2;  // Integer division on purpose
                     }
-                } else {
+                }
+                else
+                {
                     damage = damage; // Be explicit about not changing it!
                 }
                 mostDangerousOpponent.HealthPoints -= damage;
@@ -162,7 +151,8 @@ namespace DungeonExplorer {
                     new Character(mostDangerousOpponent),
                     String.Format("attacked for {0} DMG", damage)
                 ));
-                if (mostDangerousOpponent.HealthPoints <= 0) {
+                if (mostDangerousOpponent.HealthPoints <= 0)
+                {
                     otherFaction.Remove(mostDangerousOpponent);
                     eventLog.Add(new Event(
                     new Character(mostDangerousOpponent), null, "faints"
@@ -172,12 +162,18 @@ namespace DungeonExplorer {
             return eventLog;
         }
 
-        private static Boolean FactionIsAlive(in List<Character> faction) {
-            if (faction.Count == 0) {
+        private static Boolean FactionIsAlive(in List<Character> faction)
+        {
+            if (faction.Count == 0)
+            {
                 return false;
-            } else {
-                foreach (Character c in faction) {
-                    if (c.HealthPoints > 0) {
+            }
+            else
+            {
+                foreach (Character c in faction)
+                {
+                    if (c.HealthPoints > 0)
+                    {
                         return true;
                     }
                 }
@@ -186,6 +182,6 @@ namespace DungeonExplorer {
         }
     }
 
-    
+
 
 } // namespace DungeonExplorer

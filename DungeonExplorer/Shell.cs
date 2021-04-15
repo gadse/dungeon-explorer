@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 
+using DungeonExplorer.Combat;
+
 namespace DungeonExplorer {
     class Shell {
         static void Main(string[] args) {
@@ -23,7 +25,13 @@ namespace DungeonExplorer {
             }
 
             Console.WriteLine("Processing...");
-            SimulationResult result = Engine.Simulate(characters, enemies, true);
+            SimulationResult result = Engine.Simulate(
+                characters,
+                enemies,
+                true,
+                CombatBehavior.Default(),
+                CombatBehavior.Random()
+            );
 
             Console.WriteLine("");
             Console.WriteLine("Simulation Complete!\n====== RESULTS =======");

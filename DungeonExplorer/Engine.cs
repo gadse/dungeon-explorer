@@ -1,9 +1,17 @@
 using System;
 using System.Collections.Generic;
-using System.Linq;
+
+using DungeonExplorer.Combat;
 
 namespace DungeonExplorer
 {
+
+    /// <summary>
+    /// Represents the results of a completed simulation.
+    /// </summary>
+    /// Implementation Notes:
+    ///     This is implemented as a struct, since records are not available in .NET Core 3.1 without caveats.
+    ///     (https://btburnett.com/csharp/2020/12/11/csharp-9-records-and-init-only-setters-without-dotnet5.html)
     struct SimulationResult
     {
         public readonly List<Character> Party;
@@ -67,7 +75,9 @@ namespace DungeonExplorer
         public static SimulationResult Simulate(
             in List<Character> party,
             in List<Character> enemies,
-            Boolean partyBegins
+            Boolean partyBegins,
+            CombatBehavior playerBehavior,
+            CombatBehavior enemyBehavior
         )
         {
             Boolean partyTurn = partyBegins;
@@ -81,7 +91,7 @@ namespace DungeonExplorer
                 Console.WriteLine("computing round...");
                 eventLog.AddRange(
                     // No need to pass a ref here
-                    ComputeRound(partyWorkingCopy, enemiesWorkingCopy, partyTurn)
+                    ComputeRound(partyWorkingCopy, enemiesWorkingCopy, partyTurn, playerBehavior, enemyBehavior)
                 );
                 partyTurn = !partyTurn;
                 rounds += 1;
@@ -100,26 +110,32 @@ namespace DungeonExplorer
         private static List<Event> ComputeRound(
             List<Character> party,
             List<Character> enemies,
-            in Boolean partyTurn
+            in Boolean partyTurn,
+            CombatBehavior playerBehavior,
+            CombatBehavior enemyBehavior
         )
         {
             if (partyTurn)
             {
-                return ComputeRound(party, enemies);
+                return ComputeRound(party, enemies, playerBehavior);
             }
             else
             {
-                return ComputeRound(enemies, party);
+                return ComputeRound(enemies, party, enemyBehavior);
             }
         }
 
-        private static List<Event> ComputeRound(List<Character> activeFaction, List<Character> otherFaction)
+        private static List<Event> ComputeRound(
+            List<Character> activeFaction,
+            List<Character> otherFaction,
+            CombatBehavior combatBehavior
+        )
         {
             List<Event> eventLog = new List<Event>();
 
-            Character mostDangerousOpponent = otherFaction.OrderByDescending(opp => opp.HealthPoints).First();
             foreach (Character member in activeFaction)
             {
+                Character target = combatBehavior.selectTarget(member, activeFaction, otherFaction);
                 Boolean resourcesAreRelevant = (member.Resources != Constants.NO_RESOURCES_NEEDED);
                 long damage = member.AverageDamagePerRound;
 
@@ -145,17 +161,17 @@ namespace DungeonExplorer
                 {
                     damage = damage; // Be explicit about not changing it!
                 }
-                mostDangerousOpponent.HealthPoints -= damage;
+                target.HealthPoints -= damage;
                 eventLog.Add(new Event(
                     new Character(member),
-                    new Character(mostDangerousOpponent),
+                    new Character(target),
                     String.Format("attacked for {0} DMG", damage)
                 ));
-                if (mostDangerousOpponent.HealthPoints <= 0)
+                if (target.HealthPoints <= 0)
                 {
-                    otherFaction.Remove(mostDangerousOpponent);
+                    otherFaction.Remove(target);
                     eventLog.Add(new Event(
-                    new Character(mostDangerousOpponent), null, "faints"
+                    new Character(target), null, "faints"
                 ));
                 }
             }

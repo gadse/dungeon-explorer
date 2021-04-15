@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace DungeonExplorer
 {
@@ -6,7 +7,7 @@ namespace DungeonExplorer
     {
         public string Name
         {
-            get; set;
+            get;
         }
         public long HealthPoints
         {
@@ -14,17 +15,27 @@ namespace DungeonExplorer
         }
         public long AverageDamagePerRound
         {
-            get; set;
+            get;
         }
         public long Resources
         {
             get; set;
         }
 
-        /*
-        This model is extremely simplified. In the end, the Game Master needs to utilize their experience to find
-        reasonable values.
-        */
+        public List<(long damage, long resourceCost)> SpecialAttacks
+        {
+            get;
+        } = new List<(long damage, long resourceCost)>();
+
+        public List<(long healing, long resourceCost)> HealActions
+        {
+            get;
+        } = new List<(long healing, long resourceCost)>();
+
+        /// <summary>
+        /// This model is extremely simplified. In the end, the Game Master needs to utilize their experience to find
+        /// reasonable values.
+        /// </summary>
         public Character(
             string name,
             long healthPoints,
@@ -32,11 +43,12 @@ namespace DungeonExplorer
             long resources
         )
         {
-
-            Name = name;
-            HealthPoints = healthPoints;
-            AverageDamagePerRound = averageDamagePerRound;
-            Resources = resources;
+            if (resources > -1)
+            {
+                WithBasicStats(name, healthPoints, averageDamagePerRound);
+            } else {
+                WithBasicStats(name, healthPoints, averageDamagePerRound).WithResources(resources);
+            }
         }
 
         public Character(Character c)
@@ -45,6 +57,44 @@ namespace DungeonExplorer
             HealthPoints = c.HealthPoints;
             AverageDamagePerRound = c.AverageDamagePerRound;
             Resources = c.Resources;
+        }
+
+        public Character WithBasicStats(string name, long healthPoints, long averageDamagePerRound)
+        {
+            return new Character(name, healthPoints, averageDamagePerRound, Constants.NO_RESOURCES_NEEDED);
+        }
+        public Character WithResources(long resources)
+        {
+            if (resources < 0)
+            {
+                throw new ArgumentOutOfRangeException("A character can't have less than 0 resources.");
+            } else {
+                Character character = new Character(this);
+                character.Resources = resources;
+                return character;
+            }
+        }
+        public Character WithSpecialAttack(long damage, long resourceCost)
+        {
+            if (damage < 1)
+            {
+                throw new ArgumentOutOfRangeException("A character can't have special attacks with less than 1 damage.");
+            } else {
+                Character character = new Character(this);
+                character.SpecialAttacks.Add((damage, resourceCost));
+                return character;
+            }
+        }
+        public Character WithHealAction(long regeneration, long resourceCost)
+        {
+            if (regeneration < 1)
+            {
+                throw new ArgumentOutOfRangeException("A character can't have heal actions with less than 1 regeneration.");
+            } else {
+                Character character = new Character(this);
+                character.HealActions.Add((regeneration, resourceCost));
+                return character;
+            }
         }
 
         override public string ToString()

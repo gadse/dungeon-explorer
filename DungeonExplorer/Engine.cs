@@ -147,19 +147,18 @@ namespace DungeonExplorer
                         eventLog.Add(new Event(
                             new Character(member), null, "spent resource"
                         ));
-                        damage = damage; // Be explicit about not changing it!
                     }
                     else
                     {
                         eventLog.Add(new Event(
                             new Character(member), null, String.Format("is out of resources")
                         ));
-                        damage = damage / 2;  // Integer division on purpose
+                        damage = damage / 2;  // Integer division is on purpose
                     }
                 }
                 else
                 {
-                    damage = damage; // Be explicit about not changing it!
+                    // don't change anything right now
                 }
                 target.HealthPoints -= damage;
                 eventLog.Add(new Event(

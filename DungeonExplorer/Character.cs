@@ -7,7 +7,7 @@ namespace DungeonExplorer
     {
         public string Name
         {
-            get;
+            get; private set;
         }
         public long HealthPoints
         {
@@ -15,27 +15,33 @@ namespace DungeonExplorer
         }
         public long AverageDamagePerRound
         {
-            get;
+            get; private set;
         }
         public long Resources
         {
             get; set;
         }
-
         public List<(long damage, long resourceCost)> SpecialAttacks
         {
-            get;
+            get; private set;
         } = new List<(long damage, long resourceCost)>();
-
         public List<(long healing, long resourceCost)> HealActions
         {
-            get;
+            get; private set;
         } = new List<(long healing, long resourceCost)>();
 
-        /// <summary>
-        /// This model is extremely simplified. In the end, the Game Master needs to utilize their experience to find
-        /// reasonable values.
-        /// </summary>
+        public Character(Character c)
+        {
+            init(
+                c.Name,
+                c.HealthPoints,
+                c.AverageDamagePerRound,
+                c.Resources,
+                c.SpecialAttacks,
+                c.HealActions
+            );
+        }
+        
         public Character(
             string name,
             long healthPoints,
@@ -43,64 +49,55 @@ namespace DungeonExplorer
             long resources
         )
         {
-            if (resources > -1)
-            {
-                WithBasicStats(name, healthPoints, averageDamagePerRound);
-            } else {
-                WithBasicStats(name, healthPoints, averageDamagePerRound).WithResources(resources);
-            }
+            init(
+                name,
+                healthPoints,
+                averageDamagePerRound,
+                resources,
+                new List<(long healing, long resourceCost)>(),
+                new List<(long healing, long resourceCost)>()
+            );
         }
 
-        public Character(Character c)
+        public Character(
+            string name,
+            long healthPoints,
+            long averageDamagePerRound,
+            long resources,
+            List<(long healing, long resourceCost)> specialAttacks,
+            List<(long healing, long resourceCost)> healActions
+        )
         {
-            Name = c.Name;
-            HealthPoints = c.HealthPoints;
-            AverageDamagePerRound = c.AverageDamagePerRound;
-            Resources = c.Resources;
+            init(
+                name,
+                healthPoints,
+                averageDamagePerRound,
+                resources,
+                specialAttacks,
+                healActions
+            );
         }
 
-        public Character WithBasicStats(string name, long healthPoints, long averageDamagePerRound)
+        private void init(
+            string name,
+            long healthPoints,
+            long averageDamagePerRound,
+            long resources,
+            List<(long healing, long resourceCost)> specialAttacks,
+            List<(long healing, long resourceCost)> healActions
+        )
         {
-            return new Character(name, healthPoints, averageDamagePerRound, Constants.NO_RESOURCES_NEEDED);
-        }
-        public Character WithResources(long resources)
-        {
-            if (resources < 0)
-            {
-                throw new ArgumentOutOfRangeException("A character can't have less than 0 resources.");
-            } else {
-                Character character = new Character(this);
-                character.Resources = resources;
-                return character;
-            }
-        }
-        public Character WithSpecialAttack(long damage, long resourceCost)
-        {
-            if (damage < 1)
-            {
-                throw new ArgumentOutOfRangeException("A character can't have special attacks with less than 1 damage.");
-            } else {
-                Character character = new Character(this);
-                character.SpecialAttacks.Add((damage, resourceCost));
-                return character;
-            }
-        }
-        public Character WithHealAction(long regeneration, long resourceCost)
-        {
-            if (regeneration < 1)
-            {
-                throw new ArgumentOutOfRangeException("A character can't have heal actions with less than 1 regeneration.");
-            } else {
-                Character character = new Character(this);
-                character.HealActions.Add((regeneration, resourceCost));
-                return character;
-            }
+            this.Name = name;
+            this.HealthPoints = healthPoints;
+            this.AverageDamagePerRound = averageDamagePerRound;
+            this.Resources = resources;
+            this.SpecialAttacks = specialAttacks;
+            this.HealActions = healActions;
         }
 
         override public string ToString()
         {
             String resourceLimitRepresentation;
-            // This is way prettier than the ternary operator
             if (Resources != Constants.NO_RESOURCES_NEEDED)
             {
                 resourceLimitRepresentation = Resources.ToString();

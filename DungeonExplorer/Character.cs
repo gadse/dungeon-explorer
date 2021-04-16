@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DungeonExplorer
 {
-    class Character
+    public class Character
     {
         public string Name
         {

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace DungeonExplorer
 {
-    internal class CharacterBuilder
+    public class CharacterBuilder
     {
         private Character Constructed
         {

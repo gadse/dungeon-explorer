@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace DungeonExplorer
 {
@@ -6,7 +7,7 @@ namespace DungeonExplorer
     {
         public string Name
         {
-            get; set;
+            get; private set;
         }
         public long HealthPoints
         {
@@ -14,17 +15,33 @@ namespace DungeonExplorer
         }
         public long AverageDamagePerRound
         {
-            get; set;
+            get; private set;
         }
         public long Resources
         {
             get; set;
         }
+        public List<(long damage, long resourceCost)> SpecialAttacks
+        {
+            get; private set;
+        } = new List<(long damage, long resourceCost)>();
+        public List<(long healing, long resourceCost)> HealActions
+        {
+            get; private set;
+        } = new List<(long healing, long resourceCost)>();
 
-        /*
-        This model is extremely simplified. In the end, the Game Master needs to utilize their experience to find
-        reasonable values.
-        */
+        public Character(Character c)
+        {
+            init(
+                c.Name,
+                c.HealthPoints,
+                c.AverageDamagePerRound,
+                c.Resources,
+                c.SpecialAttacks,
+                c.HealActions
+            );
+        }
+        
         public Character(
             string name,
             long healthPoints,
@@ -32,25 +49,55 @@ namespace DungeonExplorer
             long resources
         )
         {
-
-            Name = name;
-            HealthPoints = healthPoints;
-            AverageDamagePerRound = averageDamagePerRound;
-            Resources = resources;
+            init(
+                name,
+                healthPoints,
+                averageDamagePerRound,
+                resources,
+                new List<(long healing, long resourceCost)>(),
+                new List<(long healing, long resourceCost)>()
+            );
         }
 
-        public Character(Character c)
+        public Character(
+            string name,
+            long healthPoints,
+            long averageDamagePerRound,
+            long resources,
+            List<(long healing, long resourceCost)> specialAttacks,
+            List<(long healing, long resourceCost)> healActions
+        )
         {
-            Name = c.Name;
-            HealthPoints = c.HealthPoints;
-            AverageDamagePerRound = c.AverageDamagePerRound;
-            Resources = c.Resources;
+            init(
+                name,
+                healthPoints,
+                averageDamagePerRound,
+                resources,
+                specialAttacks,
+                healActions
+            );
+        }
+
+        private void init(
+            string name,
+            long healthPoints,
+            long averageDamagePerRound,
+            long resources,
+            List<(long healing, long resourceCost)> specialAttacks,
+            List<(long healing, long resourceCost)> healActions
+        )
+        {
+            this.Name = name;
+            this.HealthPoints = healthPoints;
+            this.AverageDamagePerRound = averageDamagePerRound;
+            this.Resources = resources;
+            this.SpecialAttacks = specialAttacks;
+            this.HealActions = healActions;
         }
 
         override public string ToString()
         {
             String resourceLimitRepresentation;
-            // This is way prettier than the ternary operator
             if (Resources != Constants.NO_RESOURCES_NEEDED)
             {
                 resourceLimitRepresentation = Resources.ToString();

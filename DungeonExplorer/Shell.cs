@@ -6,23 +6,23 @@ using DungeonExplorer.Combat;
 namespace DungeonExplorer {
     class Shell {
         static void Main(string[] args) {
-
             Console.WriteLine("Hi there! Welcome to the dungeon explorer.");
-
             Console.WriteLine("Let's get to know our party!");
             List<Character> characters = QueryPartyMembers();
-
             Console.WriteLine("Now let's talk about the enemies our party faces.");
             List<Character> enemies = QueryEnemies();
-            
+
+            Console.WriteLine("====== OVERVIEW ======");
             Console.WriteLine("====== THE PARTY ======");
             foreach (Character character in characters) {
                 Console.WriteLine(character.ToString());
             }
+            Console.WriteLine("-----------------------");
             Console.WriteLine("====== THE ENEMIES ======");
             foreach (Character enemy in enemies) {
                 Console.WriteLine(enemy.ToString());
             }
+            Console.WriteLine("-----------------------");
 
             Console.WriteLine("Processing...");
             SimulationResult result = Engine.Simulate(
@@ -34,9 +34,10 @@ namespace DungeonExplorer {
             );
 
             Console.WriteLine("");
-            Console.WriteLine("Simulation Complete!\n====== RESULTS =======");
+            Console.WriteLine("Simulation Complete!");
+            Console.WriteLine("====== RESULTS =======");
             Console.WriteLine(result.ToString());
-            Console.WriteLine("kthxbye ^w^");
+            Console.WriteLine("kthxbye ^u^");
         }
 
         private static List<Character> QueryPartyMembers() {
@@ -45,7 +46,7 @@ namespace DungeonExplorer {
             while (!done_with_characters) {
                 Console.WriteLine(
                     String.Format(
-                        "Please enter the name of character {0} or press ENTER to start the program.",
+                        "Please enter the name of character {0} or press ENTER to start the program > ",
                         characters.Count + 1
                     )
                 );
@@ -54,15 +55,28 @@ namespace DungeonExplorer {
                     long healthPoints = ReadHealthFromConsole();
                     long averageDamage = ReadDamageFromConsole();
                     long resources = ReadResourcesFromConsole();
-                    characters.Add(
-                        new Character(
-                            name: name,
-                            healthPoints: healthPoints,
-                            averageDamagePerRound: averageDamage,
-                            resources: resources
-                        )
-                    );
-                } else {
+                    CharacterBuilder builder = new CharacterBuilder();
+                    try
+                    {
+                        characters.Add(
+                            builder.WithBasicStats(
+                                name, healthPoints, averageDamage
+                            ).WithResources(
+                                resources
+                            ).SafeBuild()
+                        );
+                    }
+                    catch (ArgumentException) {
+                        Console.WriteLine(
+                            $"Something went wrong with {name}. " +
+                            $"Maybe I've misunderstood (HP={healthPoints}, AVGDMG={averageDamage}, RES={resources}). " +
+                            $"Let's try again!"
+                        );
+                        continue;
+                    }
+                }
+                else
+                {
                     done_with_characters = true;
                 }
             }
@@ -76,7 +90,7 @@ namespace DungeonExplorer {
             while (!done_with_enemies) {
                 Console.WriteLine(
                     String.Format(
-                        "Please enter the name of enemy {0} or press ENTER to start the program.",
+                        "Please enter the name of enemy {0} or press ENTER to start the program > ",
                         enemies.Count + 1
                     )
                 );
@@ -85,14 +99,28 @@ namespace DungeonExplorer {
                     long healthPoints = ReadHealthFromConsole();
                     long averageDamage = ReadDamageFromConsole();
                     long resources = ReadResourcesFromConsole();
-                    enemies.Add(
-                        new Character(
-                            name: name,
-                            healthPoints: healthPoints,
-                            averageDamagePerRound: averageDamage,
-                            resources: resources
-                        )
-                    );
+                    CharacterBuilder builder = new CharacterBuilder();
+                    try
+                    {
+                        enemies.Add(
+                            builder.WithBasicStats(
+                                name,
+                                healthPoints,
+                                averageDamage
+                            ).WithResources(
+                                resources
+                            ).SafeBuild()
+                        );
+                    }
+                    catch (ArgumentException)
+                    {
+                        Console.WriteLine(
+                            $"Something went wrong with {name}. " +
+                            $"Maybe I've misunderstood (HP={healthPoints}, AVGDMG={averageDamage}, RES={resources}). " +
+                            $"Let's try again!"
+                        );
+                        continue;
+                    }
                 } else {
                     done_with_enemies = true;
                 }
@@ -117,12 +145,15 @@ namespace DungeonExplorer {
                 "Resources available? (Spell slots etc.) ['no' or number expected] > "
             );
             long inputNumber = -1;
-            while (inputNumber != Constants.NO_RESOURCES_NEEDED && inputNumber < 0) {
+            while (inputNumber != Constants.NO_RESOURCES_NEEDED && inputNumber < 1) {
                 try {
                     string input = Console.ReadLine();
-                    if (input == "no") {
+                    if (input == "no")
+                    {
                         inputNumber = Constants.NO_RESOURCES_NEEDED;
-                    } else {
+                    }
+                    else
+                    {
                         inputNumber = Convert.ToInt64(input);
                     }
                 } catch (System.FormatException) {

@@ -10,6 +10,10 @@ I want to write a small and simple application to estimate battle outcomes in 5t
 
 3. Start program: `dotnet run`
 
+## Tests
+
+Can be found in DungeonExplorer.Tests. To execute them, just `dotnet test` in the root dir.
+
 ## Dev Notes
 
 C# Docs: https://docs.microsoft.com/en-us/dotnet/csharp/

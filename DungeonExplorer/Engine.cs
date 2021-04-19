@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 using DungeonExplorer.Combat;
 
@@ -17,14 +18,14 @@ namespace DungeonExplorer
         public readonly List<Character> Party;
         public readonly List<Character> Enemies;
         public readonly long Rounds;
-        public readonly Boolean PartyVictorious;
+        public readonly bool PartyVictorious;
         public readonly List<Event> EventLog;
 
         public SimulationResult(
             List<Character> party,
             List<Character> enemies,
             long rounds,
-            Boolean partyVictorious,
+            bool partyVictorious,
             List<Event> eventLog
         )
         {
@@ -75,12 +76,12 @@ namespace DungeonExplorer
         public static SimulationResult Simulate(
             in List<Character> party,
             in List<Character> enemies,
-            Boolean partyBegins,
+            bool partyBegins,
             CombatBehavior playerBehavior,
             CombatBehavior enemyBehavior
         )
         {
-            Boolean partyTurn = partyBegins;
+            bool partyTurn = partyBegins;
             List<Character> partyWorkingCopy = party.ConvertAll(c => new Character(c));
             List<Character> enemiesWorkingCopy = enemies.ConvertAll(c => new Character(c));
             List<Event> eventLog = new List<Event>();
@@ -107,10 +108,28 @@ namespace DungeonExplorer
             );
         }
 
+        public static List<SimulationResult> SimulateRepeatedly(
+            in List<Character> party,
+            in List<Character> enemies,
+            bool partyBegins,
+            CombatBehavior playerBehavior,
+            CombatBehavior enemyBehavior,
+            int iterations
+        )
+        {
+            List<SimulationResult> results = new List<SimulationResult>();
+            foreach (int _ in Enumerable.Range(1, iterations))
+            {
+                results.Add(Simulate(party, enemies, partyBegins, playerBehavior, enemyBehavior));
+            }
+            return results;
+        }
+
+
         private static List<Event> ComputeRound(
             List<Character> party,
             List<Character> enemies,
-            in Boolean partyTurn,
+            in bool partyTurn,
             CombatBehavior playerBehavior,
             CombatBehavior enemyBehavior
         )
@@ -136,7 +155,7 @@ namespace DungeonExplorer
             foreach (Character member in activeFaction)
             {
                 Character target = combatBehavior.selectTarget(member, activeFaction, otherFaction);
-                Boolean resourcesAreRelevant = (member.Resources != Constants.NO_RESOURCES_NEEDED);
+                bool resourcesAreRelevant = (member.Resources != Constants.NO_RESOURCES_NEEDED);
                 long damage = member.AverageDamagePerRound;
 
                 if (resourcesAreRelevant)
@@ -177,7 +196,7 @@ namespace DungeonExplorer
             return eventLog;
         }
 
-        private static Boolean FactionIsAlive(in List<Character> faction)
+        private static bool FactionIsAlive(in List<Character> faction)
         {
             if (faction.Count == 0)
             {

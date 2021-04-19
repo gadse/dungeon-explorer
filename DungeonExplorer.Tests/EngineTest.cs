@@ -80,5 +80,33 @@ namespace DungeonExplorer.Tests
             Assert.True(someoneIsAlive(result.Enemies));
             Assert.False(someoneIsAlive(result.Party));
         }
+
+        [Fact]
+        public void Test_VeryLongRun()
+        {
+            List<Character> characters = new List<Character>();
+            characters.Add(
+                builder.WithBasicStats("helga", (long) 1.0E6, 1).Build()
+            );
+
+            List<Character> enemies = new List<Character>();
+            enemies.Add(
+                builder.WithBasicStats("hugo", (long) 5.0E5, 4).Build()
+            );
+
+            SimulationResult result = Engine.Simulate(
+                characters,
+                enemies,
+                true,
+                CombatBehavior.Default(),
+                CombatBehavior.Random()
+            );
+
+            Assert.False(result.PartyVictorious);
+
+
+            Assert.True(someoneIsAlive(result.Enemies));
+            Assert.False(someoneIsAlive(result.Party));
+        }
     }
 }

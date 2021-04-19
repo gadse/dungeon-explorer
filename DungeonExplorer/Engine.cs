@@ -12,7 +12,7 @@ namespace DungeonExplorer
     /// Implementation Notes:
     ///     This is implemented as a struct, since records are not available in .NET Core 3.1 without caveats.
     ///     (https://btburnett.com/csharp/2020/12/11/csharp-9-records-and-init-only-setters-without-dotnet5.html)
-    struct SimulationResult
+    public struct SimulationResult
     {
         public readonly List<Character> Party;
         public readonly List<Character> Enemies;
@@ -70,7 +70,7 @@ namespace DungeonExplorer
         }
     }
 
-    class Engine
+    public class Engine
     {
         public static SimulationResult Simulate(
             in List<Character> party,

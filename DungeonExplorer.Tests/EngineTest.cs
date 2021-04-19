@@ -20,6 +20,19 @@ namespace DungeonExplorer.Tests
             builder = null;
         }
 
+        private Boolean someoneIsAlive(List<Character> chars)
+        {
+            Boolean atLeastOneStillAlive = false;
+            foreach (Character c in chars)
+            {
+                if (c.HealthPoints > 0)
+                {
+                    atLeastOneStillAlive = true;
+                }
+            }
+            return atLeastOneStillAlive;
+        }
+
         [Fact]
         public void Test_RunEmpty()
         {
@@ -38,7 +51,6 @@ namespace DungeonExplorer.Tests
             );
             Assert.Equal(0, result.Rounds);
             Assert.Empty(result.EventLog);
-
         }
 
         [Fact]
@@ -64,28 +76,9 @@ namespace DungeonExplorer.Tests
 
             Assert.False(result.PartyVictorious);
 
-            Boolean atLeastOneEnemyStillAlive = false;
-            foreach (Character enemy in result.Enemies)
-            {
-                if (enemy.HealthPoints > 0)
-                {
-                    atLeastOneEnemyStillAlive = true;
-                }
-            }
-            Assert.True(atLeastOneEnemyStillAlive);
-
-            Boolean partyDead = true;
-            foreach (Character c in result.Party)
-            {
-                if (c.HealthPoints > 0)
-                {
-                    partyDead = false;
-                }
-            }
-            Assert.True(partyDead);
-            Assert.True(result.Rounds > 0);
-            Assert.NotEmpty(result.EventLog);
+            
+            Assert.True(someoneIsAlive(result.Enemies));
+            Assert.False(someoneIsAlive(result.Party));
         }
-
     }
 }

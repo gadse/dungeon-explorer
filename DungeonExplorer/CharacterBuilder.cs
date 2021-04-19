@@ -51,8 +51,8 @@ namespace DungeonExplorer
                 Constructed.HealthPoints,
                 Constructed.AverageDamagePerRound,
                 Constructed.Resources,
-                extendedHealActions,
-                Constructed.HealActions
+                Constructed.SpecialAttacks,
+                extendedHealActions
             );
             return this;
         }

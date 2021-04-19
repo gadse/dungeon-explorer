@@ -6,7 +6,7 @@ namespace DungeonExplorer.Combat
     /// <summary>
     /// Base for different combat behaviors (strategy pattern!).
     /// </summary>
-    abstract class CombatBehavior
+    public abstract class CombatBehavior
     {
         public abstract Character selectTarget(
             Character actingCharacter,

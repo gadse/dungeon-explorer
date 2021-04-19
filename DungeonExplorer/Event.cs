@@ -2,7 +2,7 @@ using System;
 
 namespace DungeonExplorer
 {
-    class Event
+    public class Event
     {
         public Character Source
         {

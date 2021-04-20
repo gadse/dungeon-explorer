@@ -32,7 +32,7 @@ namespace DungeonExplorer
 
         public Character(Character c)
         {
-            init(
+            Init(
                 c.Name,
                 c.HealthPoints,
                 c.AverageDamagePerRound,
@@ -49,7 +49,7 @@ namespace DungeonExplorer
             long resources
         )
         {
-            init(
+            Init(
                 name,
                 healthPoints,
                 averageDamagePerRound,
@@ -68,7 +68,7 @@ namespace DungeonExplorer
             List<(long healing, long resourceCost)> healActions
         )
         {
-            init(
+            Init(
                 name,
                 healthPoints,
                 averageDamagePerRound,
@@ -78,7 +78,7 @@ namespace DungeonExplorer
             );
         }
 
-        private void init(
+        private void Init(
             string name,
             long healthPoints,
             long averageDamagePerRound,

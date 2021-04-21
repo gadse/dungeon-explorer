@@ -4,7 +4,9 @@ using System.Collections.Generic;
 namespace DungeonExplorer.Combat
 {
     /// <summary>
-    /// Base for different combat behaviors (strategy pattern!).
+    /// Base for different combat behaviors (strategy pattern).
+    /// 
+    /// I still don't now where to put the factory methods other than here, but that'll come with time.
     /// </summary>
     public abstract class CombatBehavior
     {

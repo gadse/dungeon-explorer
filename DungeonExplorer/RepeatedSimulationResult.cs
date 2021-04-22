@@ -12,6 +12,9 @@ namespace DungeonExplorer
     /// 
     /// Implementation Notes:
     ///     I'd really like to make this a record in the future.
+    /// 
+    /// TODO:
+    ///     Implement aggregation stuff using LINQ (Groupby, SelectMany, Aggregate)
     public class RepeatedSimulationResult : IEnumerable<SimulationResult>
     {
         public List<SimulationResult> Results

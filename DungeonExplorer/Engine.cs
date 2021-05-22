@@ -43,7 +43,8 @@ namespace DungeonExplorer
             );
         }
 
-        public static List<SimulationResult> SimulateRepeatedly(
+        public static (List<SimulationResult> AllResults, AggregatedSimulationResult AggregatedResults)
+        SimulateRepeatedly(
             in List<Character> party,
             in List<Character> enemies,
             bool partyBegins,
@@ -57,7 +58,9 @@ namespace DungeonExplorer
             {
                 results.Add(Simulate(party, enemies, partyBegins, playerBehavior, enemyBehavior));
             }
-            return results;
+
+            AggregatedSimulationResult aggregatedResults = ResultAggregator.AggregateResults(results);
+            return (AllResults: results, AggregatedResults: aggregatedResults);
         }
 
 

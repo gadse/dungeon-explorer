@@ -130,7 +130,7 @@ namespace DungeonExplorer.Tests
                 builder.WithBasicStats("fritz", 10, 20).Build()
             );
 
-            List<SimulationResult> results = Engine.SimulateRepeatedly(
+            var results = Engine.SimulateRepeatedly(
                 characters,
                 enemies,
                 true,
@@ -139,7 +139,8 @@ namespace DungeonExplorer.Tests
                 iterations
             );
 
-            Assert.Equal(iterations, results.Count);
+            Assert.Equal(iterations, results.AllResults.Count);
+            Assert.Equal(iterations, results.AggregatedResults.Statistics["Rounds"]);
         }
     }
 }

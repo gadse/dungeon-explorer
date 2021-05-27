@@ -30,11 +30,11 @@ namespace DungeonExplorer
                             enemies: result.Enemies
                         );
 
-            var statistics = MeasureStatistics(table);
-            var distributions = MeasureDistributions(table);
+                var statistics = MeasureStatistics(table);
+                var distributions = MeasureDistributions(table);
 
             return new AggregatedSimulationResult(statistics, distributions);
-        }
+            }
 
 
         public static Dictionary<string, double> MeasureStatistics(
